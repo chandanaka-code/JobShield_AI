@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}History · JobShield AI{% endblock %}
+{% block content %}
+<div class="report-head"><div><div class="eyebrow">MODULE 05</div><h1>Analysis history</h1><p>Saved locally on this computer.</p></div>{% if history %}<form method="post" action="{{ url_for('clear_history') }}" onsubmit="return confirm('Clear all saved history?')"><button class="button secondary" type="submit">Clear history</button></form>{% endif %}</div>
+<section class="panel">{% if history %}<div class="table-scroll"><table><thead><tr><th>DATE</th><th>COMPANY</th><th>SENDER</th><th>SCORE</th><th>INDICATOR</th></tr></thead><tbody>{% for item in history %}<tr><td>{{ item.time }}</td><td>{{ item.company }}</td><td>{{ item.sender }}</td><td>{{ item.score }}/100</td><td><span class="pill {% if item.score >= 60 %}danger{% elif item.score >= 30 %}warn{% else %}safe{% endif %}">{{ item.overall }}</span></td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty"><span>◷</span><b>No saved analyses</b><p>Run an analysis from the dashboard to build your history.</p><a class="text-link" href="{{ url_for('index') }}">Start an analysis →</a></div>{% endif %}</section>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Company check · JobShield AI{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{{ url_for('index') }}">Dashboard</a> / Company verification</div>
+<div class="page-title"><div class="eyebrow">MODULE 04</div><h1>Company & domain check</h1><p>Compare the sender’s domain against a company domain you have independently confirmed.</p></div>
+<form class="panel narrow" method="post"><div class="field"><label>Company name</label><input name="company_name" placeholder="Company name"></div><div class="field"><label>Official domain you verified independently</label><input name="official_domain" placeholder="example.com"></div><div class="field"><label>Sender email address</label><input name="sender_email" placeholder="recruiter@example.com"></div><button class="button" type="submit">Compare domains →</button></form>
+{% if result %}<section class="panel result-box"><div class="eyebrow">CHECK RESULT</div><h2>{{ result.status }}</h2><p>{{ result.message }}</p></section>{% endif %}
+<div class="notice">This module does not query government registries, the internet, or a live company database. A matching domain does not prove the email was not spoofed.</div>
+{% endblock %}

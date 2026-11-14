@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+data/history.json
+uploads/*
+!uploads/.gitkeep
+data/company_master_data_2026-10-28_part4.csv

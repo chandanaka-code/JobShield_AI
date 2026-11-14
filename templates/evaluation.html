@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Evaluation · JobShield AI{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{{ url_for('index') }}">Dashboard</a> / Evaluation</div>
+<div class="page-title"><div class="eyebrow">MODULE 05</div><h1>Model evaluation</h1><p>Metrics from a tiny built-in demonstration set, included to illustrate how evaluation works.</p></div>
+<div class="notice"><b>Important limitation:</b> these are not validated model results. This starter project uses rule-based warning-signal screening rather than a trained ML classifier.</div>
+<div class="metric-grid"><div class="panel metric"><small>DEMO ACCURACY</small><strong>{{ metrics.accuracy }}</strong><p>Correct predictions / examples</p></div><div class="panel metric"><small>DEMO PRECISION</small><strong>{{ metrics.precision }}</strong><p>Positive predictions that were correct</p></div><div class="panel metric"><small>DEMO RECALL</small><strong>{{ metrics.recall }}</strong><p>Positive examples detected</p></div><div class="panel metric"><small>DEMO F1 SCORE</small><strong>{{ metrics.f1 }}</strong><p>Harmonic mean of precision and recall</p></div></div>
+<section class="panel"><div class="eyebrow">CONFUSION COUNTS</div><div class="counts"><div><small>True positives</small><strong>{{ metrics.tp }}</strong></div><div><small>True negatives</small><strong>{{ metrics.tn }}</strong></div><div><small>False positives</small><strong>{{ metrics.fp }}</strong></div><div><small>False negatives</small><strong>{{ metrics.fn }}</strong></div></div><p class="muted">{{ metrics.note }}</p></section>
+{% endblock %}

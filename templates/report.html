@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobShield AI - Analysis Report</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            margin-bottom: 6px;
+            color: #173b70;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            margin-bottom: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            overflow-wrap: anywhere;
+        }
+
+        .risk {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .high {
+            color: #b91c1c;
+        }
+
+        .review {
+            color: #b45309;
+        }
+
+        .low {
+            color: #166534;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .score {
+            font-size: 34px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .website-link {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 11px 15px;
+            border-radius: 8px;
+            background: #1d4ed8;
+            color: white;
+            text-decoration: none;
+        }
+
+        .website-link:hover {
+            background: #1e40af;
+        }
+
+        .warning {
+            padding: 12px;
+            background: #fff7ed;
+            border-left: 4px solid #f59e0b;
+            border-radius: 5px;
+            line-height: 1.5;
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        li {
+            margin-bottom: 9px;
+            line-height: 1.5;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .nav-links a {
+            color: #1d4ed8;
+        }
+
+        .empty {
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 14px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="header">
+        <h1>JobShield AI</h1>
+        <p>Job Offer Safety Analysis Report</p>
+        <p class="muted">
+            Analysis time: {{ report.time }}
+        </p>
+    </header>
+
+    <!-- Overall risk -->
+    <section class="card">
+        <h2>Risk Assessment</h2>
+
+        {% if report.overall == "High risk" %}
+            <div class="risk high">⚠️ High Risk</div>
+        {% elif report.overall == "Needs review" %}
+            <div class="risk review">⚠️ Needs Review</div>
+        {% else %}
+            <div class="risk low">Lower Risk</div>
+        {% endif %}
+
+        <div class="score">{{ report.score }}/100</div>
+
+        <p>
+            This is a screening score, not a confirmed probability
+            that the job offer is fraudulent.
+        </p>
+
+        <p class="muted">
+            A low score does not guarantee that a job or company is genuine.
+        </p>
+    </section>
+
+    <!-- Company name and website search -->
+    <section class="card">
+        <h2>Company Information</h2>
+
+        <p><strong>Company name:</strong> {{ report.company }}</p>
+
+        {% if report.company != "Not detected" and report.company_search_url %}
+            <p>
+                Search for the company's official website using
+                the detected company name.
+            </p>
+
+            <a
+                class="website-link"
+                href="{{ report.company_search_url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Search Official Company Website ↗
+            </a>
+
+            <p class="muted">
+                This opens a search engine. It is not a verified
+                company website. Check the domain independently
+                before trusting it.
+            </p>
+        {% else %}
+            <p class="empty">
+                No company name could be detected automatically.
+                You can enter the company name on the analysis page
+                and analyze the offer again.
+            </p>
+        {% endif %}
+
+        <hr>
+
+        <h3>Company Domain Check</h3>
+
+        <p>
+            <strong>Status:</strong>
+            {{ report.company_check.status }}
+        </p>
+
+        <p>
+            {{ report.company_check.message }}
+        </p>
+    </section>
+
+    <!-- Offer text analysis -->
+    <section class="card">
+        <h2>Job Offer Analysis</h2>
+
+        <p>
+            <strong>Analysis method:</strong>
+            {{ report.content.label or "Content screening" }}
+        </p>
+
+        <p>
+            <strong>Content risk score:</strong>
+            {{ report.content.score }}/100
+        </p>
+
+        <p>
+            <strong>Content risk level:</strong>
+            {{ report.content.level }}
+        </p>
+
+        <h3>Warning Signs</h3>
+
+        {% if report.content.reasons %}
+            <ul>
+                {% for reason in report.content.reasons %}
+                    <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty">No warning signs were returned.</p>
+        {% endif %}
+
+        <h3>Recommended Actions</h3>
+
+        {% if report.content.advice %}
+            <ul>
+                {% for item in report.content.advice %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+
+    <!-- Sender email analysis -->
+    <section class="card">
+        <h2>Sender Email Check</h2>
+
+        <p>
+            <strong>Sender:</strong>
+            {{ report.sender }}
+        </p>
+
+        <p>
+            <strong>Email domain:</strong>
+            {{ report.sender_check.domain or "Not available" }}
+        </p>
+
+        <p>
+            <strong>Sender risk score:</strong>
+            {{ report.sender_check.score }}/100
+        </p>
+
+        <h3>Findings</h3>
+
+        {% if report.sender_check.reasons %}
+            <ul>
+                {% for reason in report.sender_check.reasons %}
+                    <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty">No sender findings available.</p>
+        {% endif %}
+
+        {% if report.sender_check.advice %}
+            <h3>Sender Safety Advice</h3>
+            <ul>
+                {% for item in report.sender_check.advice %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+
+    <!-- Extracted text preview -->
+    <section class="card">
+        <h2>Extracted Text Preview</h2>
+
+        {% if report.text_preview %}
+            <p>{{ report.text_preview }}</p>
+        {% else %}
+            <p class="empty">No text preview is available.</p>
+        {% endif %}
+
+        {% if report.file %}
+            <p class="muted">
+                Uploaded filename: {{ report.file }}
+            </p>
+        {% endif %}
+    </section>
+
+    <div class="warning">
+        <strong>Safety reminder:</strong>
+        Never pay a recruitment fee or share an OTP, password,
+        or sensitive identity or banking information just because
+        a job offer appears legitimate.
+    </div>
+
+    <nav class="nav-links">
+        <a href="{{ url_for('index') }}">← Analyze another offer</a>
+        <a href="{{ url_for('history') }}">View analysis history</a>
+        <a href="{{ url_for('company_check') }}">Company domain check</a>
+    </nav>
+
+</div>
+</body>
+</html>

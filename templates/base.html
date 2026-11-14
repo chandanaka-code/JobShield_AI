@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}JobShield AI{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">J</span><span>JobShield <b>AI</b><small>VERIFY THE OFFER. PROTECT YOUR FUTURE.</small></span></a>
+  <nav>
+    <a href="{{ url_for('index') }}">Dashboard</a>
+    <a href="{{ url_for('company_check') }}">Company check</a>
+    <a href="{{ url_for('evaluation') }}">Evaluation</a>
+    <a href="{{ url_for('history') }}">History</a>
+  </nav>
+</header>
+<main class="page">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}<div class="flash-wrap">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+</main>
+<footer>JobShield AI · Screening support, not a definitive fraud verdict.</footer>
+</body></html>

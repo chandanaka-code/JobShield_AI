@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · JobShield AI{% endblock %}
+{% block content %}
+<section class="hero">
+  <div><div class="eyebrow">INTERNSHIP & JOB SAFETY PLATFORM</div><h1>Make your next career move<br><span>with confidence.</span></h1>
+  <p>Screen offer messages, sender addresses, and documents for warning signs before you respond.</p>
+  <div class="hero-tags"><span>✓ Explainable checks</span><span>✓ Sender analysis</span><span>✓ Local processing</span></div></div>
+  <div class="hero-art"><div class="shield">✓</div><div class="orbit orbit1"></div><div class="orbit orbit2"></div><span class="art-label">TRUST, VERIFIED</span></div>
+</section>
+<section class="stats">
+  <div class="stat"><span class="stat-icon">▤</span><div><small>ANALYSES SAVED</small><strong>{{ total }}</strong><p>On this device</p></div></div>
+  <div class="stat"><span class="stat-icon">◎</span><div><small>INPUT OPTIONS</small><strong>6</strong><p>Text, email, files & more</p></div></div>
+  <div class="stat"><span class="stat-icon">◇</span><div><small>SCREENING MODE</small><strong>Explainable</strong><p>See the reasons behind flags</p></div></div>
+</section>
+<div class="section-heading"><div><div class="eyebrow">START A NEW CHECK</div><h2>Analyze an internship offer</h2><p>Fill in what you have. You can analyze text, sender details, or an uploaded file.</p></div><span class="step-pill">01 / ANALYZE</span></div>
+<form class="panel analysis-form" action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data">
+  <div class="form-grid">
+    <div class="field"><label for="company_name">Company name <span>OPTIONAL</span></label><input id="company_name" name="company_name" placeholder="e.g. Acme Technologies"></div>
+    <div class="field"><label for="sender_email">Sender email <span>MODULE 6</span></label><input id="sender_email" name="sender_email" type="text" placeholder="hr@example.com"><small>Checks address patterns and domain mismatches.</small></div>
+    <div class="field full"><label for="official_domain">Known official company domain <span>OPTIONAL</span></label><input id="official_domain" name="official_domain" placeholder="e.g. example.com"><small>Enter a domain you independently confirmed. The app does not claim live company verification.</small></div>
+    <div class="field full"><label for="offer_text">Offer message or job description <span>PASTE TEXT</span></label><textarea id="offer_text" name="offer_text" rows="7" placeholder="Paste the internship offer, recruiter message, job description, payment request, or email body here..."></textarea></div>
+    <div class="field full"><label for="offer_file">Upload a file <span>OPTIONAL</span></label><div class="upload"><input id="offer_file" name="offer_file" type="file" accept=".txt,.pdf,.docx,.png,.jpg,.jpeg,.eml"><p>Supported: TXT, PDF, DOCX, PNG, JPG, EML. For an original email, upload its .eml file.</p></div></div>
+  </div>
+  <div class="form-bottom"><div class="privacy-note">🔒 Files are processed locally and removed after extraction.</div><button class="button" type="submit">Analyze offer <span>→</span></button></div>
+</form>
+<section class="section-heading modules-heading"><div><div class="eyebrow">YOUR SAFETY WORKSPACE</div><h2>Six connected modules</h2></div></section>
+<div class="module-grid">
+  <a class="module-card" href="{{ url_for('index') }}"><span class="module-icon">▦</span><span class="module-number">01</span><h3>Professional dashboard</h3><p>One place to start checks and review recent activity.</p></a>
+  <a class="module-card" href="#offer_text"><span class="module-icon">↥</span><span class="module-number">02</span><h3>Multi-input analysis</h3><p>Analyze pasted messages, documents, images, and .eml files.</p></a>
+  <a class="module-card" href="{{ url_for('evaluation') }}"><span class="module-icon">⌁</span><span class="module-number">03</span><h3>Explainable report</h3><p>Review the warning signals that contributed to a score.</p></a>
+  <a class="module-card" href="{{ url_for('company_check') }}"><span class="module-icon">◎</span><span class="module-number">04</span><h3>Company verification</h3><p>Compare the sender domain with a domain you trust.</p></a>
+  <a class="module-card" href="{{ url_for('evaluation') }}"><span class="module-icon">▥</span><span class="module-number">05</span><h3>Evaluation & history</h3><p>View demo metrics and previous local analyses.</p></a>
+  <a class="module-card" href="#sender_email"><span class="module-icon">✉</span><span class="module-number">06</span><h3>Sender email detection</h3><p>Flag public email providers and possible domain mismatches.</p></a>
+</div>
+<section class="recent panel"><div class="recent-head"><div><div class="eyebrow">YOUR ACTIVITY</div><h2>Recent analyses</h2></div><a class="text-link" href="{{ url_for('history') }}">View history →</a></div>
+{% if history %}<div class="table-scroll"><table><thead><tr><th>COMPANY / SENDER</th><th>DATE</th><th>RISK INDICATOR</th><th>RESULT</th></tr></thead><tbody>{% for item in history %}<tr><td><b>{{ item.company }}</b><small>{{ item.sender }}</small></td><td>{{ item.time }}</td><td>{{ item.score }}/100</td><td><span class="pill {% if item.score >= 60 %}danger{% elif item.score >= 30 %}warn{% else %}safe{% endif %}">{{ item.overall }}</span></td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty"><span>◷</span><b>No analyses yet</b><p>Your recent checks will appear here after your first analysis.</p></div>{% endif %}
+</section>
+{% endblock %}
